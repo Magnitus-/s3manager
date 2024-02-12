@@ -38,6 +38,7 @@ The application can be configured with the following environment variables:
 - `SSE_TYPE`: Specified server side encrpytion (defaults blank) Valid values can be `SSE`, `KMS`, `SSE-C` all others values don't enable the SSE
 - `SSE_KEY`: The key needed for SSE method (only for `KMS` and `SSE-C`)
 - `TIMEOUT`: The read and write timout in seconds (default to `600` - 10 minutes)
+- `SHARED_BUCKETS_PATH`: The path to an object containing a yaml list of buckets the user has access to, but doesn't own and wouldn't otherwise see listed which can happen in some s3 platforms. Useful to add additional buckets the user should see in the bucket list, but can't otherwise see listed as he/she doesn't own them.
 
 ### Build and Run Locally
 

@@ -8,6 +8,7 @@ require (
 	github.com/matryer/is v1.4.1
 	github.com/minio/minio-go/v7 v7.0.66
 	github.com/spf13/viper v1.18.2
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (

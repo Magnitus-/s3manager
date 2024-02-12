@@ -19,11 +19,13 @@
                                 <div class="col">
                                     <i class="material-icons large">folder_open</i>
                                 </div>
-                                <div class="col">
+                                <div class="col" style="width: 100%;">
                                     <span class="card-title">
                                         {{ $bucket.Name }}
                                     </span>
+                                    {{if time_defined $bucket.CreationDate}}
                                     <p style="color:gray;">Created on {{ $bucket.CreationDate }}</p>
+                                    {{ end }}
                                 </div>
                             </div>
                         </div>

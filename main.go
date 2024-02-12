@@ -41,6 +41,7 @@ type configuration struct {
 	Timeout             int32
 	SseType             string
 	SseKey              string
+	SharedBucketsPath   string
 }
 
 func parseConfiguration() configuration {
@@ -98,6 +99,9 @@ func parseConfiguration() configuration {
 	viper.SetDefault("SSE_KEY", "")
 	sseKey := viper.GetString("SSE_KEY")
 
+	viper.SetDefault("SHARED_BUCKETS_PATH", "")
+	sharedBucketsPath := viper.GetString("SHARED_BUCKETS_PATH")
+
 	return configuration{
 		Endpoint:            endpoint,
 		UseIam:              useIam,
@@ -115,6 +119,7 @@ func parseConfiguration() configuration {
 		Timeout:             timeout,
 		SseType:             sseType,
 		SseKey:              sseKey,
+		SharedBucketsPath:   sharedBucketsPath,
 	}
 }
 
@@ -175,7 +180,7 @@ func main() {
 	r := mux.NewRouter()
 	r.Handle("/", http.RedirectHandler("/buckets", http.StatusPermanentRedirect)).Methods(http.MethodGet)
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.FS(statics)))).Methods(http.MethodGet)
-	r.Handle("/buckets", s3manager.HandleBucketsView(s3, templates, configuration.AllowDelete)).Methods(http.MethodGet)
+	r.Handle("/buckets", s3manager.HandleBucketsView(s3, templates, configuration.AllowDelete, configuration.SharedBucketsPath)).Methods(http.MethodGet)
 	r.PathPrefix("/buckets/").Handler(s3manager.HandleBucketView(s3, templates, configuration.AllowDelete, configuration.ListRecursive)).Methods(http.MethodGet)
 	r.Handle("/api/buckets", s3manager.HandleCreateBucket(s3)).Methods(http.MethodPost)
 	if configuration.AllowDelete {
