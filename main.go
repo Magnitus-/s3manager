@@ -37,6 +37,7 @@ type configuration struct {
 	SkipSSLVerification bool
 	SignatureType       string
 	ListRecursive       bool
+	Address             string
 	Port                string
 	Timeout             int32
 	SseType             string
@@ -90,6 +91,9 @@ func parseConfiguration() configuration {
 	viper.SetDefault("PORT", "8080")
 	port := viper.GetString("PORT")
 
+	viper.SetDefault("ADDRESS", "")
+	address := viper.GetString("ADDRESS")
+
 	viper.SetDefault("TIMEOUT", 600)
 	timeout := viper.GetInt32("TIMEOUT")
 
@@ -116,6 +120,7 @@ func parseConfiguration() configuration {
 		SignatureType:       signatureType,
 		ListRecursive:       listRecursive,
 		Port:                port,
+		Address:             address,
 		Timeout:             timeout,
 		SseType:             sseType,
 		SseKey:              sseKey,
@@ -195,7 +200,7 @@ func main() {
 
 	lr := logging.Handler(os.Stdout)(r)
 	srv := &http.Server{
-		Addr:         ":" + configuration.Port,
+		Addr:         fmt.Sprintf("%s:%s", configuration.Address, configuration.Port),
 		Handler:      lr,
 		ReadTimeout:  serverTimeout,
 		WriteTimeout: serverTimeout,

@@ -30,6 +30,7 @@ The application can be configured with the following environment variables:
 - `SKIP_SSL_VERIFICATION`: Whether the HTTP client should skip SSL verification (defaults to `false`)
 - `SIGNATURE_TYPE`: The signature type to be used (defaults to `V4`; valid values are `V2, V4, V4Streaming, Anonymous`)
 - `PORT`: The port the s3manager app should listen on (defaults to `8080`)
+- `ADDRESS`: The address the s3manager app should listen on (defaults to any address)
 - `ALLOW_DELETE`: Enable buttons to delete objects (defaults to `true`)
 - `FORCE_DOWNLOAD`: Add response headers for object downloading instead of opening in a new tab (defaults to `true`)
 - `LIST_RECURSIVE`: List all objects in buckets recursively (defaults to `false`)
