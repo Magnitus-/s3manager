@@ -58,6 +58,17 @@ func HandleBucketsView(s3 S3, templates fs.FS, allowDelete bool, sharedBucketsPa
 			}
 
 			for _, name := range additionalBuckets {
+				alreadyPresent := false
+				for _, bucket := range buckets {
+					if name == bucket.Name {
+						alreadyPresent = true
+						break
+					}
+				}
+				if alreadyPresent {
+					continue
+				}
+
 				buckets = append(buckets, minio.BucketInfo{Name: name})
 			}
 		}
