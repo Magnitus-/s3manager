@@ -10,7 +10,6 @@ import (
 	"strings"
 	"time"
 	"net/url"
-	"log"
 
 	"github.com/minio/minio-go/v7"
 )
@@ -41,7 +40,7 @@ func HandleBucketView(s3 S3, templates fs.FS, allowDelete bool, listRecursive bo
 		bucketName := matches[1]
 		path, rqerr := url.QueryUnescape(matches[2])
 		if rqerr != nil {
-			log.Fatal(rqerr)
+			handleHTTPError(w, fmt.Errorf("error listing objects: %w", rqerr))
 			return
 		}
 		var objs []objectWithIcon
