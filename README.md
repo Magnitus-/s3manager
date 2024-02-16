@@ -41,6 +41,12 @@ The application can be configured with the following environment variables:
 - `TIMEOUT`: The read and write timout in seconds (default to `600` - 10 minutes)
 - `SHARED_BUCKETS_PATH`: The path to an object containing a yaml list of buckets the user has access to, but doesn't own and wouldn't otherwise see listed which can happen in some s3 platforms. Useful to add additional buckets the user should see in the bucket list, but can't otherwise see listed as he/she doesn't own them.
 
+Alternatively, you can use the above configuration parameters in a file called `config.yml`, `config.json` or any of the formats supported by viper: https://github.com/spf13/viper?tab=readme-ov-file#reading-config-files
+
+The file can be present in the running directory or in a `.s3manager` directory under your home directory.
+
+Note that any parameters passed in a configuration file, the configuration should be lower case.
+
 ### Build and Run Locally
 
 1.  Run `make build`

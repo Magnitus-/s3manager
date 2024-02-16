@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"time"
 
 	"github.com/cloudlena/adapters/logging"
@@ -48,63 +49,72 @@ type configuration struct {
 func parseConfiguration() configuration {
 	var accessKeyID, secretAccessKey, iamEndpoint string
 
+	viper.SetConfigName("config")
+	viper.AddConfigPath(path.Join("$HOME", ".s3manager"))
+	viper.AddConfigPath(".")
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			log.Fatal(err)
+		}
+	}
+
 	viper.AutomaticEnv()
 
-	viper.SetDefault("ENDPOINT", "s3.amazonaws.com")
-	endpoint := viper.GetString("ENDPOINT")
+	viper.SetDefault("endpoint", "s3.amazonaws.com")
+	endpoint := viper.GetString("endpoint")
 
-	useIam := viper.GetBool("USE_IAM")
+	useIam := viper.GetBool("use_iam")
 
 	if useIam {
-		iamEndpoint = viper.GetString("IAM_ENDPOINT")
+		iamEndpoint = viper.GetString("iam_endpoint")
 	} else {
-		accessKeyID = viper.GetString("ACCESS_KEY_ID")
+		accessKeyID = viper.GetString("access_key_id")
 		if len(accessKeyID) == 0 {
 			log.Fatal("please provide ACCESS_KEY_ID")
 		}
 
-		secretAccessKey = viper.GetString("SECRET_ACCESS_KEY")
+		secretAccessKey = viper.GetString("secret_access_key")
 		if len(secretAccessKey) == 0 {
 			log.Fatal("please provide SECRET_ACCESS_KEY")
 		}
 	}
 
-	region := viper.GetString("REGION")
+	region := viper.GetString("region")
 
-	viper.SetDefault("ALLOW_DELETE", true)
-	allowDelete := viper.GetBool("ALLOW_DELETE")
+	viper.SetDefault("allow_delete", true)
+	allowDelete := viper.GetBool("allow_delete")
 
-	viper.SetDefault("FORCE_DOWNLOAD", true)
-	forceDownload := viper.GetBool("FORCE_DOWNLOAD")
+	viper.SetDefault("force_download", true)
+	forceDownload := viper.GetBool("force_download")
 
-	viper.SetDefault("USE_SSL", true)
-	useSSL := viper.GetBool("USE_SSL")
+	viper.SetDefault("use_ssl", true)
+	useSSL := viper.GetBool("use_ssl")
 
-	viper.SetDefault("SKIP_SSL_VERIFICATION", false)
-	skipSSLVerification := viper.GetBool("SKIP_SSL_VERIFICATION")
+	viper.SetDefault("skip_ssl_verification", false)
+	skipSSLVerification := viper.GetBool("skip_ssl_verification")
 
-	viper.SetDefault("SIGNATURE_TYPE", "V4")
-	signatureType := viper.GetString("SIGNATURE_TYPE")
+	viper.SetDefault("signature_type", "V4")
+	signatureType := viper.GetString("signature_type")
 
-	listRecursive := viper.GetBool("LIST_RECURSIVE")
+	listRecursive := viper.GetBool("list_recursive")
 
-	viper.SetDefault("PORT", "8080")
-	port := viper.GetString("PORT")
+	viper.SetDefault("port", "8080")
+	port := viper.GetString("port")
 
-	viper.SetDefault("ADDRESS", "")
-	address := viper.GetString("ADDRESS")
+	viper.SetDefault("address", "")
+	address := viper.GetString("address")
 
-	viper.SetDefault("TIMEOUT", 600)
-	timeout := viper.GetInt32("TIMEOUT")
+	viper.SetDefault("timeout", 600)
+	timeout := viper.GetInt32("timeout")
 
-	viper.SetDefault("SSE_TYPE", "")
-	sseType := viper.GetString("SSE_TYPE")
+	viper.SetDefault("sse_type", "")
+	sseType := viper.GetString("sse_type")
 
-	viper.SetDefault("SSE_KEY", "")
-	sseKey := viper.GetString("SSE_KEY")
+	viper.SetDefault("sse_key", "")
+	sseKey := viper.GetString("sse_key")
 
-	viper.SetDefault("SHARED_BUCKETS_PATH", "")
-	sharedBucketsPath := viper.GetString("SHARED_BUCKETS_PATH")
+	viper.SetDefault("shared_buckets_path", "")
+	sharedBucketsPath := viper.GetString("shared_buckets_path")
 
 	return configuration{
 		Endpoint:            endpoint,
