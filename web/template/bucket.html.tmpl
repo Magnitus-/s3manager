@@ -31,7 +31,8 @@
         <a href="{{ $url }}" class="breadcrumb">{{ $.BucketName }}</a>
 
         {{ range $index, $path := .Paths }}
-        {{ $url = printf "%s%s/" $url $path }}
+        {{ $escaped_path := html_escape $path }}
+        {{ $url = printf "%s%s/" $url $escaped_path }}
         <a href="{{ $url }}" class="breadcrumb">{{ $path }}</a>
         {{ end }}
     </div>
@@ -56,7 +57,7 @@
             <tr>
                 <td
                     {{ if $object.IsFolder }}
-                    onclick="location.href='/buckets/{{ $.BucketName }}/{{ $object.Key }}'"}
+                    onclick="location.href='/buckets/{{ $.BucketName }}/{{ html_escape $object.Key }}'"}
                     style="cursor:pointer;"
                     {{ end }}>
                     <i class="material-icons">{{ $object.Icon }}</i> {{ $object.DisplayName }}

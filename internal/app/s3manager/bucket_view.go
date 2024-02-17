@@ -76,7 +76,11 @@ func HandleBucketView(s3 S3, templates fs.FS, allowDelete bool, listRecursive bo
 			CurrentPath: path,
 		}
 
-		t, err := template.ParseFS(templates, "layout.html.tmpl", "bucket.html.tmpl")
+		t, err := template.New("").Funcs(template.FuncMap{
+			"html_escape": func(input string) string {
+				return url.QueryEscape(input)
+			},
+		}).ParseFS(templates, "layout.html.tmpl", "bucket.html.tmpl")
 		if err != nil {
 			handleHTTPError(w, fmt.Errorf("error parsing template files: %w", err))
 			return
