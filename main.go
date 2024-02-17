@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
+	"path/filepath"
 	"time"
 
 	"github.com/cloudlena/adapters/logging"
@@ -50,7 +50,7 @@ func parseConfiguration() configuration {
 	var accessKeyID, secretAccessKey, iamEndpoint string
 
 	viper.SetConfigName("config")
-	viper.AddConfigPath(path.Join("$HOME", ".s3manager"))
+	viper.AddConfigPath(filepath.Join("$HOME", ".s3manager"))
 	viper.AddConfigPath(".")
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
