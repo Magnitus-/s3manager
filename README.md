@@ -40,6 +40,7 @@ The application can be configured with the following environment variables:
 - `SSE_KEY`: The key needed for SSE method (only for `KMS` and `SSE-C`)
 - `TIMEOUT`: The read and write timout in seconds (default to `600` - 10 minutes)
 - `SHARED_BUCKETS_PATH`: The path to an object containing a yaml list of buckets the user has access to, but doesn't own and wouldn't otherwise see listed which can happen in some s3 platforms. Useful to add additional buckets the user should see in the bucket list, but can't otherwise see listed as he/she doesn't own them.
+- `CA_CERT`: The path to an optional CA certificate that the client should use to validate the s3 server's certificate.
 
 Alternatively, you can use the above configuration parameters in a file called `config.yml`, `config.json` or any of the formats supported by viper: https://github.com/spf13/viper?tab=readme-ov-file#reading-config-files
 

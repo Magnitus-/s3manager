@@ -2,9 +2,11 @@ package main
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"embed"
 	"fmt"
 	"io/fs"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -44,6 +46,7 @@ type configuration struct {
 	SseType             string
 	SseKey              string
 	SharedBucketsPath   string
+	CaCert              string
 }
 
 func parseConfiguration() configuration {
@@ -116,6 +119,9 @@ func parseConfiguration() configuration {
 	viper.SetDefault("shared_buckets_path", "")
 	sharedBucketsPath := viper.GetString("shared_buckets_path")
 
+	viper.SetDefault("ca_cert", "")
+	caCert := viper.GetString("ca_cert")
+
 	return configuration{
 		Endpoint:            endpoint,
 		UseIam:              useIam,
@@ -135,6 +141,7 @@ func parseConfiguration() configuration {
 		SseType:             sseType,
 		SseKey:              sseKey,
 		SharedBucketsPath:   sharedBucketsPath,
+		CaCert:              caCert,
 	}
 }
 
@@ -183,9 +190,30 @@ func main() {
 	if configuration.Region != "" {
 		opts.Region = configuration.Region
 	}
-	if configuration.UseSSL && configuration.SkipSSLVerification {
-		opts.Transport = &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}} //nolint:gosec
+
+	if configuration.UseSSL {
+		tlsConf := tls.Config{
+			InsecureSkipVerify: configuration.SkipSSLVerification,
+		}
+
+		if configuration.CaCert != "" {
+			caCertContent, err := ioutil.ReadFile(configuration.CaCert)
+			if err != nil {
+				log.Fatalln(fmt.Errorf("Failed to read CA certificate file: %s", err))
+			}
+			roots := x509.NewCertPool()
+			ok := roots.AppendCertsFromPEM(caCertContent)
+			if !ok {
+				log.Fatalln(fmt.Errorf("Failed to parse CA certificate: %w", err))
+			}
+			tlsConf.RootCAs = roots
+		}
+
+		opts.Transport = &http.Transport{
+			TLSClientConfig: &tlsConf,
+		}
 	}
+
 	s3, err := minio.New(configuration.Endpoint, opts)
 	if err != nil {
 		log.Fatalln(fmt.Errorf("error creating s3 client: %w", err))
